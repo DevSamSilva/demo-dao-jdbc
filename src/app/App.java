@@ -2,6 +2,8 @@ package app;
 
 import java.util.Date;
 
+import dao.FabricaDao;
+import dao.VendedorDao;
 import model.DepartamentoModel;
 import model.VendedorModel;
 
@@ -14,5 +16,7 @@ public class App {
                 departamentoModel);
 
         System.out.println(vendedorModel);
+
+        VendedorDao vendedorDao = FabricaDao.criarVendedorDao();
     }
 }
