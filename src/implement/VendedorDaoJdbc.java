@@ -58,17 +58,10 @@ public class VendedorDaoJdbc implements VendedorDao {
             // verifica se encontrou resultado
             if (rs.next()) {
                 // transforma dados do banco de dados em java
-                DepartamentoModel departamentoModel = new DepartamentoModel();
-                departamentoModel.setId(rs.getInt("DepartmentId"));
-                departamentoModel.setNome(rs.getString("DepName"));
+                DepartamentoModel departamentoModel = instantiateDepartmento(rs);
 
-                VendedorModel vendedorModel = new VendedorModel();
-                vendedorModel.setId(rs.getInt("Id"));
-                vendedorModel.setNome(rs.getString("Name"));
-                vendedorModel.setEmail(rs.getString("Email"));
-                vendedorModel.setSalarioBase(rs.getDouble("BaseSalary"));
-                vendedorModel.setDataDeNascimento(rs.getDate("BirthDate"));
-                vendedorModel.setDepartamentoModel(departamentoModel);
+                VendedorModel vendedorModel = instantiateVendedor(rs, departamentoModel);
+
                 return vendedorModel;
             }
             return null;
@@ -78,6 +71,25 @@ public class VendedorDaoJdbc implements VendedorDao {
             DB.closeStatement(st);
             DB.closeResultSet(rs);
         }
+
+    }
+
+    private VendedorModel instantiateVendedor(ResultSet rs, DepartamentoModel dep) throws SQLException {
+        VendedorModel vendedor = new VendedorModel();
+        vendedor.setId(rs.getInt("Id"));
+        vendedor.setNome(rs.getString("Name"));
+        vendedor.setEmail(rs.getString("Email"));
+        vendedor.setSalarioBase(rs.getDouble("BaseSalary"));
+        vendedor.setDataDeNascimento(rs.getDate("BirthDate"));
+        vendedor.setDepartamentoModel(dep);
+        return vendedor;
+    }
+
+    private DepartamentoModel instantiateDepartmento(ResultSet rs) throws SQLException {
+        DepartamentoModel dep = new DepartamentoModel();
+        dep.setId(rs.getInt("DepartmentId"));
+        dep.setNome(rs.getString("DepName"));
+        return dep;
 
     }
 

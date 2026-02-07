@@ -15,6 +15,8 @@ public class App {
 
         VendedorDao vendedorDao = FabricaDao.criarVendedorDao();
 
+        System.out.println("=== teste 1: vendedor findById ===");
+
         VendedorModel vendedorModel = vendedorDao.findById(3);
 
         System.out.println(vendedorModel);
