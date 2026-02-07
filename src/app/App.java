@@ -1,22 +1,22 @@
 package app;
 
-import java.util.Date;
+import java.sql.DriverManager;
 
 import dao.FabricaDao;
 import dao.VendedorDao;
-import model.DepartamentoModel;
 import model.VendedorModel;
 
 public class App {
     public static void main(String[] args) {
-        DepartamentoModel departamentoModel = new DepartamentoModel(1, "Livros");
-        System.out.println(departamentoModel);
 
-        VendedorModel vendedorModel = new VendedorModel(21, "Bob", "bob@gmail.com", new Date(), 3000.00,
-                departamentoModel);
-
-        System.out.println(vendedorModel);
+        DriverManager.getDrivers()
+                .asIterator()
+                .forEachRemaining(d -> System.out.println(d.getClass().getName()));
 
         VendedorDao vendedorDao = FabricaDao.criarVendedorDao();
+
+        VendedorModel vendedorModel = vendedorDao.findById(3);
+
+        System.out.println(vendedorModel);
     }
 }
