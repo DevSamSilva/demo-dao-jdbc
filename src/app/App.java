@@ -1,9 +1,11 @@
 package app;
 
 import java.sql.DriverManager;
+import java.util.List;
 
 import dao.FabricaDao;
 import dao.VendedorDao;
+import model.DepartamentoModel;
 import model.VendedorModel;
 
 public class App {
@@ -20,5 +22,13 @@ public class App {
         VendedorModel vendedorModel = vendedorDao.findById(3);
 
         System.out.println(vendedorModel);
+
+        System.out.println("=== teste 2: vendedor findByDepartment ===");
+        DepartamentoModel dep = new DepartamentoModel(2, null);
+        List<VendedorModel> list = vendedorDao.findByDepartamento(dep);
+
+        for (VendedorModel vendedorModel2 : list) {
+            System.out.println(vendedorModel2);
+        }
     }
 }
