@@ -1,10 +1,12 @@
 package app;
 
 import java.sql.DriverManager;
+import java.util.Date;
 import java.util.List;
 
 import dao.FabricaDao;
 import dao.VendedorDao;
+import implement.VendedorDaoJdbc;
 import model.DepartamentoModel;
 import model.VendedorModel;
 
@@ -39,5 +41,10 @@ public class App {
             System.out.println(vendedorModel2);
         }
 
+        System.out.println("=== teste 4: vendedor insert ===");
+        VendedorModel novoVendedor = new VendedorModel(null, "Samuel", "samueldsn@gmail.com", new Date(), 4000,
+                dep2);
+        vendedorDao.insert(novoVendedor);
+        System.out.println("Inserido! Novo ID: " + novoVendedor.getId());
     }
 }

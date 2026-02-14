@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +26,41 @@ public class VendedorDaoJdbc implements VendedorDao {
 
     @Override
     public void insert(VendedorModel obj) {
-        throw new UnsupportedOperationException("Unimplemented method 'insert'");
+        PreparedStatement st = null;
+        try {
+            st = conn.prepareStatement(
+                    "INSERT INTO seller "
+                            + "(Name, Email, BirthDate, BaseSalary, DepartmentId) "
+                            + "VALUES "
+                            + "(?, ?, ?, ?, ?)",
+                    Statement.RETURN_GENERATED_KEYS);
+
+            st.setString(1, obj.getNome());
+            st.setString(2, obj.getEmail());
+            st.setDate(3, new java.sql.Date(obj.getDataDeNascimento().getTime()));
+            st.setDouble(4, obj.getSalarioBase());
+            st.setInt(5, obj.getDepartamentoModel().getId());
+
+            int linhasAfetadas = st.executeUpdate();
+
+            if (linhasAfetadas > 0) {
+                ResultSet rs = st.getGeneratedKeys();
+                if (rs.next()) {
+                    int id = rs.getInt(1);
+                    obj.setId(id);
+                }
+
+                DB.closeResultSet(rs);
+            } else {
+                throw new DbException("Erro inesperado, nenhuma linha foi afetada");
+            }
+
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+        }
+
     }
 
     @Override
