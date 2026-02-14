@@ -61,7 +61,6 @@ public class VendedorDaoJdbc implements VendedorDao {
 
             // verifica se encontrou resultado
             if (rs.next()) {
-                // transforma dados do banco de dados em java
                 DepartamentoModel departamentoModel = instantiateDepartmento(rs);
 
                 VendedorModel vendedorModel = instantiateVendedor(rs, departamentoModel);
@@ -78,6 +77,8 @@ public class VendedorDaoJdbc implements VendedorDao {
 
     }
 
+    // instancias de vendedor
+    // transforma dados do banco de dados em java
     private VendedorModel instantiateVendedor(ResultSet rs, DepartamentoModel dep) throws SQLException {
         VendedorModel vendedor = new VendedorModel();
         vendedor.setId(rs.getInt("Id"));
@@ -89,6 +90,8 @@ public class VendedorDaoJdbc implements VendedorDao {
         return vendedor;
     }
 
+    // instancia de departamento
+    // transforma dados do banco de dados em java
     private DepartamentoModel instantiateDepartmento(ResultSet rs) throws SQLException {
         DepartamentoModel dep = new DepartamentoModel();
         dep.setId(rs.getInt("DepartmentId"));
@@ -99,15 +102,61 @@ public class VendedorDaoJdbc implements VendedorDao {
 
     @Override
     public List<VendedorModel> findAll() {
-        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
+        // executa sql
+        PreparedStatement st = null;
+        // guarda resultado da consulta
+        ResultSet rs = null;
+
+        try {
+            // executa comando sql
+            st = conn.prepareStatement(
+                    "SELECT seller.*,department.Name as DepName "
+                            + "FROM seller INNER JOIN department "
+                            + "ON seller.DepartmentId = department.Id "
+                            + "ORDER BY Name");
+
+            // retorna os dados no result set
+            rs = st.executeQuery();
+
+            // guarda os vendedores que serao retornados
+            List<VendedorModel> list = new ArrayList<>();
+
+            // para nao criar o mesmo departamento varias vezes, utiliza map por chave
+            Map<Integer, DepartamentoModel> map = new HashMap<>();
+
+            while (rs.next()) {
+
+                // busca no map e evita departamento duplicado
+                DepartamentoModel department = map.get(rs.getInt("DepartmentId"));
+                if (department == null) {
+                    department = instantiateDepartmento(rs);
+                    map.put(rs.getInt("DepartmentId"), department);
+                }
+
+                VendedorModel vendedorModel = instantiateVendedor(rs, department);
+
+                list.add(vendedorModel);
+            }
+
+            return list;
+
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
     }
 
     @Override
     public List<VendedorModel> findByDepartamento(DepartamentoModel dep) {
+        // executa sql
         PreparedStatement st = null;
+        // guarda resultado da consulta
         ResultSet rs = null;
 
         try {
+            // executa comando sql
             st = conn.prepareStatement(
                     "SELECT seller.*,department.Name as DepName "
                             + "FROM seller INNER JOIN department "
@@ -115,16 +164,21 @@ public class VendedorDaoJdbc implements VendedorDao {
                             + "WHERE DepartmentId = ? "
                             + "ORDER BY Name");
 
+            // substitui o ? pelo id
             st.setInt(1, dep.getId());
 
+            // retorna os dados no result set
             rs = st.executeQuery();
 
+            // guarda os vendedores que serao retornados
             List<VendedorModel> list = new ArrayList<>();
 
+            // para nao criar o mesmo departamento varias vezes, utiliza map por chave
             Map<Integer, DepartamentoModel> map = new HashMap<>();
 
             while (rs.next()) {
 
+                // busca no map e evita departamento duplicado
                 DepartamentoModel department = map.get(rs.getInt("DepartmentId"));
                 if (department == null) {
                     department = instantiateDepartmento(rs);

@@ -30,5 +30,14 @@ public class App {
         for (VendedorModel vendedorModel2 : list) {
             System.out.println(vendedorModel2);
         }
+
+        System.out.println("=== teste 3: vendedor findAll ===");
+        DepartamentoModel dep2 = new DepartamentoModel(2, null);
+        list = vendedorDao.findAll();
+
+        for (VendedorModel vendedorModel2 : list) {
+            System.out.println(vendedorModel2);
+        }
+
     }
 }
