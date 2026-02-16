@@ -6,7 +6,6 @@ import java.util.List;
 
 import dao.FabricaDao;
 import dao.VendedorDao;
-import implement.VendedorDaoJdbc;
 import model.DepartamentoModel;
 import model.VendedorModel;
 
@@ -46,5 +45,12 @@ public class App {
                 dep2);
         vendedorDao.insert(novoVendedor);
         System.out.println("Inserido! Novo ID: " + novoVendedor.getId());
+
+        System.out.println("=== teste 5: vendedor update ===");
+        vendedorModel = vendedorDao.findById(1);
+        vendedorModel.setNome("Fonfis");
+        vendedorDao.update(vendedorModel);
+        System.out.println("Atualizado!");
+
     }
 }
