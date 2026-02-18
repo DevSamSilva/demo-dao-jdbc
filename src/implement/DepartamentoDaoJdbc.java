@@ -77,7 +77,20 @@ public class DepartamentoDaoJdbc implements DepartamentoDao {
 
     @Override
     public void deleteById(Integer id) {
-        throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
+        PreparedStatement st = null;
+        try {
+            st = conn.prepareStatement(
+                    "DELETE FROM department "
+                            + "WHERE Id = ?");
+
+            st.setInt(1, id);
+            st.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+        }
     }
 
     @Override

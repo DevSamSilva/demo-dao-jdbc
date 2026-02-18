@@ -23,6 +23,12 @@ public class App2 {
         departamentoDao.update(departamentoModel);
         System.out.println("Atualizado!");
 
+        System.out.println("=== Teste 3: delete department");
+        System.out.println("Digite o ID que deseja deletar");
+        int id = sc.nextInt();
+        departamentoDao.deleteById(id);
+        System.out.println("Departamento deletado");
+
         sc.close();
     }
 }
