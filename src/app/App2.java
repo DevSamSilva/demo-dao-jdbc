@@ -13,9 +13,15 @@ public class App2 {
         DepartamentoDao departamentoDao = FabricaDao.criarDepartamentoDao();
 
         System.out.println("=== Teste 1: Insert department");
-        DepartamentoModel departamentoModel = new DepartamentoModel(null, "Moda");
+        DepartamentoModel departamentoModel = new DepartamentoModel(null, "Cor");
         departamentoDao.insert(departamentoModel);
         System.out.println("Inserido! Novo ID: " + departamentoModel.getId());
+
+        System.out.println("=== Teste 2: update department");
+        departamentoModel = departamentoDao.findById(7);
+        departamentoModel.setNome("Sapatos");
+        departamentoDao.update(departamentoModel);
+        System.out.println("Atualizado!");
 
         sc.close();
     }

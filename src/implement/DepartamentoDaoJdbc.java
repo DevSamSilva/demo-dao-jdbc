@@ -56,25 +56,72 @@ public class DepartamentoDaoJdbc implements DepartamentoDao {
 
     @Override
     public void update(DepartamentoModel obj) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+        PreparedStatement st = null;
+        try {
+            st = conn.prepareStatement(
+                    "UPDATE department "
+                            + "SET Name = ? "
+                            + "WHERE Id = ?");
+
+            st.setString(1, obj.getNome());
+            st.setInt(2, obj.getId());
+
+            st.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+        }
     }
 
     @Override
     public void deleteById(Integer id) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
     }
 
     @Override
     public DepartamentoModel findById(Integer id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findById'");
+
+        // executa sql
+        PreparedStatement st = null;
+        // guarda resultado da consulta
+        ResultSet rs = null;
+
+        try {
+            // monta a query sql
+            st = conn.prepareStatement(
+                    "SELECT * FROM department WHERE Id = ?");
+            // substitui ? por id
+            st.setInt(1, id);
+
+            // retorna os dados no result set
+            rs = st.executeQuery();
+
+            // verifica se encontrou resultado
+            if (rs.next()) {
+                DepartamentoModel departamentoModel = instantiateDepartmento(rs);
+
+                return departamentoModel;
+            }
+            return null;
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
+    }
+
+    private DepartamentoModel instantiateDepartmento(ResultSet rs) throws RuntimeException, SQLException {
+        DepartamentoModel dep = new DepartamentoModel();
+        dep.setId(rs.getInt("Id"));
+        dep.setNome(rs.getString("Name"));
+        return dep;
     }
 
     @Override
     public List<DepartamentoModel> findAll() {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'findAll'");
     }
 
