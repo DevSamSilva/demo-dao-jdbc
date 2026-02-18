@@ -1,5 +1,6 @@
 package app;
 
+import java.util.List;
 import java.util.Scanner;
 
 import dao.DepartamentoDao;
@@ -28,6 +29,14 @@ public class App2 {
         int id = sc.nextInt();
         departamentoDao.deleteById(id);
         System.out.println("Departamento deletado");
+
+        System.out.println("=== teste 4: department findAll ===");
+        DepartamentoModel dep2 = new DepartamentoModel(2, null);
+        List<DepartamentoModel> list = departamentoDao.findAll();
+
+        for (DepartamentoModel dp : list) {
+            System.out.println(dp);
+        }
 
         sc.close();
     }

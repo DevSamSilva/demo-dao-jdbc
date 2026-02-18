@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import dao.DepartamentoDao;
@@ -135,7 +136,38 @@ public class DepartamentoDaoJdbc implements DepartamentoDao {
 
     @Override
     public List<DepartamentoModel> findAll() {
-        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
+        // executa sql
+        PreparedStatement st = null;
+        // guarda resultado da consulta
+        ResultSet rs = null;
+
+        try {
+            // executa comando sql
+            st = conn.prepareStatement(
+                    "SELECT * FROM department ORDER BY Name");
+
+            // retorna os dados no result set
+            rs = st.executeQuery();
+
+            // guarda os vendedores que serao retornados
+            List<DepartamentoModel> list = new ArrayList<>();
+
+            while (rs.next()) {
+
+                DepartamentoModel obj = new DepartamentoModel();
+                obj.setId(rs.getInt("Id"));
+                obj.setNome(rs.getString("Name"));
+                list.add(obj);
+            }
+
+            return list;
+
+        } catch (SQLException e) {
+            throw new DbException(e.getMessage());
+        } finally {
+            DB.closeStatement(st);
+            DB.closeResultSet(rs);
+        }
     }
 
 }
